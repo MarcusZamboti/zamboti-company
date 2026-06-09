@@ -12,8 +12,10 @@ async function startServer() {
   const server = createServer(app);
 
   // Serve static files (index.html) - dynamically find the build output folder
-  let staticPath = path.resolve(__dirname, "..", "dist");
+  let staticPath = path.resolve(__dirname, "..", "public");
   const possiblePaths = [
+    path.resolve(__dirname, "..", "..", "public"), // relative to dist/server/index.js -> public
+    path.resolve(__dirname, "..", "public"), // relative to server/index.ts -> public
     path.resolve(__dirname, ".."), // relative to dist/server/index.js -> dist
     path.resolve(__dirname, "..", "dist"), // relative to server/index.ts -> dist
   ];
