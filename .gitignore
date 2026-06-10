@@ -5,7 +5,7 @@
 # Build outputs
 dist/
 build/
-public/
+/public/
 *.dist
 
 # Environment variables
