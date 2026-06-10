@@ -209,12 +209,12 @@ export default function AdminDashboard() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Default passcode check. Hardcoded for client convenience but protected.
-    if (passcode === "1234" || passcode === "admin2026") {
+    // Alphanumeric password check. Hardcoded for client convenience but protected.
+    if (passcode === "102938Mbk@") {
       setIsAuthenticated(true);
       setLoginError("");
     } else {
-      setLoginError("Código incorreto. Tente novamente.");
+      setLoginError("Senha incorreta. Tente novamente.");
       setPasscode("");
     }
   };
@@ -477,7 +477,7 @@ export default function AdminDashboard() {
               <Lock className="w-4 h-4 text-primary absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="password"
-                placeholder="Código de Acesso (Padrão: 1234)"
+                placeholder="Digite a Senha de Acesso"
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
                 className="w-full bg-black/50 border border-white/10 rounded-xl pl-12 pr-4 py-3.5 text-center text-sm font-mono text-white placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none transition-all"
