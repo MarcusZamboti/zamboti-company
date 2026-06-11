@@ -16,12 +16,17 @@ import {
   AlertCircle,
   FileText,
   DollarSign,
-  Laptop
+  Laptop,
+  Cloud,
+  CloudOff,
+  Database,
+  RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Logo from "@/components/zamboti/Logo";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 // Types definition
 interface Device {
@@ -180,8 +185,48 @@ export default function AdminDashboard() {
   const [empRole, setEmpRole] = useState("");
   const [empDevice, setEmpDevice] = useState("");
 
-  // Load clients from LocalStorage on mount
-  useEffect(() => {
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [dbStatus, setDbStatus] = useState<"connected" | "local">("local");
+
+  // Load clients from remote database or fallback to LocalStorage
+  const loadClients = async () => {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from("zamboti_clients")
+          .select("*")
+          .order("name", { ascending: true });
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          const mappedClients = data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            cnpj: item.cnpj || "",
+            contactName: item.contact_name || "",
+            phone: item.phone || "",
+            email: item.email || "",
+            monthlyFee: Number(item.monthly_fee) || 0,
+            dueDate: Number(item.due_date) || 10,
+            paymentStatus: item.payment_status as "Pago" | "Pendente",
+            devices: Array.isArray(item.devices) ? item.devices : [],
+            employees: Array.isArray(item.employees) ? item.employees : [],
+            network: item.network || { provider: "", speed: "", routerIp: "", wifiSsid: "", wifiPassword: "" },
+            notes: item.notes || ""
+          }));
+          
+          setClients(mappedClients);
+          localStorage.setItem("zamboti_crm_clients", JSON.stringify(mappedClients));
+          setDbStatus("connected");
+          return;
+        }
+      } catch (err) {
+        console.error("Erro ao carregar do Supabase, caindo para LocalStorage:", err);
+      }
+    }
+    
+    // Fallback: LocalStorage
     const saved = localStorage.getItem("zamboti_crm_clients");
     if (saved) {
       try {
@@ -193,17 +238,121 @@ export default function AdminDashboard() {
       setClients(INITIAL_CLIENTS);
       localStorage.setItem("zamboti_crm_clients", JSON.stringify(INITIAL_CLIENTS));
     }
+    setDbStatus("local");
+  };
+
+  useEffect(() => {
+    loadClients();
   }, []);
 
-  // Save clients to LocalStorage whenever state changes
-  const saveClients = (updatedClients: Client[]) => {
+  // Save clients to LocalStorage and remote database
+  const saveClients = async (updatedClients: Client[]) => {
+    // Atualização otimista do estado
     setClients(updatedClients);
     localStorage.setItem("zamboti_crm_clients", JSON.stringify(updatedClients));
     
-    // Maintain active client reference update
+    // Atualiza referência do cliente selecionado
     if (selectedClient) {
       const updatedSelect = updatedClients.find(c => c.id === selectedClient.id);
       setSelectedClient(updatedSelect || null);
+    }
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        // Sincroniza exclusões
+        const currentIds = new Set(updatedClients.map(c => c.id));
+        const deletedIds = clients.filter(c => !currentIds.has(c.id)).map(c => c.id);
+
+        if (deletedIds.length > 0) {
+          const { error: delError } = await supabase
+            .from("zamboti_clients")
+            .delete()
+            .in("id", deletedIds);
+          if (delError) throw delError;
+        }
+
+        // Sincroniza inserções e atualizações (upsert)
+        if (updatedClients.length > 0) {
+          const rowsToUpsert = updatedClients.map(c => ({
+            id: c.id,
+            name: c.name,
+            cnpj: c.cnpj,
+            contact_name: c.contactName,
+            phone: c.phone,
+            email: c.email,
+            monthly_fee: c.monthlyFee,
+            due_date: c.dueDate,
+            payment_status: c.paymentStatus,
+            devices: c.devices,
+            employees: c.employees,
+            network: c.network,
+            notes: c.notes || "",
+            updated_at: new Date().toISOString()
+          }));
+
+          const { error: upsertError } = await supabase
+            .from("zamboti_clients")
+            .upsert(rowsToUpsert, { onConflict: "id" });
+          if (upsertError) throw upsertError;
+        }
+        setDbStatus("connected");
+      } catch (err) {
+        console.error("Erro ao sincronizar com o Supabase:", err);
+        setDbStatus("local");
+      }
+    }
+  };
+
+  // Envia dados locais para a nuvem
+  const syncLocalToCloud = async () => {
+    if (!isSupabaseConfigured || !supabase) {
+      alert("O Supabase não está configurado nas variáveis de ambiente da Vercel.");
+      return;
+    }
+    
+    setIsSyncing(true);
+    try {
+      const saved = localStorage.getItem("zamboti_crm_clients");
+      if (!saved) {
+        alert("Não há dados locais para sincronizar.");
+        setIsSyncing(false);
+        return;
+      }
+      
+      const localClients: Client[] = JSON.parse(saved);
+      
+      const rowsToUpsert = localClients.map(c => ({
+        id: c.id,
+        name: c.name,
+        cnpj: c.cnpj,
+        contact_name: c.contactName,
+        phone: c.phone,
+        email: c.email,
+        monthly_fee: c.monthlyFee,
+        due_date: c.dueDate,
+        payment_status: c.paymentStatus,
+        devices: c.devices,
+        employees: c.employees,
+        network: c.network,
+        notes: c.notes || "",
+        updated_at: new Date().toISOString()
+      }));
+      
+      if (rowsToUpsert.length > 0) {
+        const { error: upsertError } = await supabase
+          .from("zamboti_clients")
+          .upsert(rowsToUpsert, { onConflict: "id" });
+        
+        if (upsertError) throw upsertError;
+      }
+      
+      await loadClients();
+      alert("Sincronização concluída com sucesso! Os dados locais foram enviados para a nuvem.");
+    } catch (err: any) {
+      console.error("Erro na sincronização:", err);
+      alert(`Falha ao sincronizar: ${err.message || err}`);
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -526,6 +675,38 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-3">
+            {isSupabaseConfigured ? (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/40 border border-white/5 text-[11px] font-medium font-mono text-muted-foreground">
+                <span className="text-xs">Nuvem:</span>
+                {dbStatus === "connected" ? (
+                  <span className="flex items-center gap-1 text-green-400 font-semibold">
+                    <Cloud className="w-3.5 h-3.5" />
+                    Sincronizado
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-yellow-500 font-semibold animate-pulse">
+                    <CloudOff className="w-3.5 h-3.5" />
+                    Offline
+                  </span>
+                )}
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={syncLocalToCloud}
+                  disabled={isSyncing}
+                  title="Sincronizar dados locais com a nuvem"
+                  className="w-5 h-5 ml-1 text-muted-foreground hover:text-white rounded-md hover:bg-white/5 flex items-center justify-center p-0"
+                >
+                  <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin text-primary' : ''}`} />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-[11px] text-yellow-500 font-mono">
+                <Database className="w-3.5 h-3.5 text-yellow-500" />
+                Modo Local (Sem Nuvem)
+              </div>
+            )}
+
             <Button
               variant="outline"
               size="sm"
