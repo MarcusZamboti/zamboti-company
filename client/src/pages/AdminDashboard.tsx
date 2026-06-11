@@ -199,6 +199,8 @@ export default function AdminDashboard() {
         
         if (error) throw error;
         
+        setDbStatus("connected"); // Conectou com sucesso!
+
         if (data && data.length > 0) {
           const mappedClients = data.map((item: any) => ({
             id: item.id,
@@ -218,7 +220,19 @@ export default function AdminDashboard() {
           
           setClients(mappedClients);
           localStorage.setItem("zamboti_crm_clients", JSON.stringify(mappedClients));
-          setDbStatus("connected");
+          return;
+        } else {
+          // O banco está conectado mas vazio. Vamos carregar os dados locais do LocalStorage (se houver) para que o usuário possa sincronizar.
+          const saved = localStorage.getItem("zamboti_crm_clients");
+          if (saved) {
+            try {
+              setClients(JSON.parse(saved));
+            } catch (e) {
+              setClients([]);
+            }
+          } else {
+            setClients([]);
+          }
           return;
         }
       } catch (err) {
