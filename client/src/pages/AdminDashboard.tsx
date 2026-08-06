@@ -20,7 +20,10 @@ import {
   Cloud,
   CloudOff,
   Database,
-  RefreshCw
+  RefreshCw,
+  Award,
+  ExternalLink,
+  Copy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -70,6 +73,16 @@ interface Client {
   employees: Employee[];
   network: NetworkInfo;
   notes?: string;
+}
+
+interface Certificate {
+  id: string;
+  student_name: string;
+  course_name: string;
+  hours: number;
+  issue_date: string;
+  instructor: string;
+  status: string;
 }
 
 // Initial mock data to avoid empty screen on first load
@@ -142,6 +155,18 @@ export default function AdminDashboard() {
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Certificates states
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [activeSection, setActiveSection] = useState<"crm" | "certificates">("crm");
+  const [certSearchQuery, setCertSearchQuery] = useState("");
+  
+  // Certificate Forms states
+  const [newCertId, setNewCertId] = useState("");
+  const [newCertStudent, setNewCertStudent] = useState("");
+  const [newCertCourse, setNewCertCourse] = useState("");
+  const [newCertHours, setNewCertHours] = useState(40);
+  const [newCertDate, setNewCertDate] = useState(new Date().toISOString().split("T")[0]);
   
   // Forms states
   const [showAddClientModal, setShowAddClientModal] = useState(false);
@@ -255,8 +280,79 @@ export default function AdminDashboard() {
     setDbStatus("local");
   };
 
+  const loadCertificates = async () => {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from("zamboti_certificates")
+          .select("*")
+          .order("student_name", { ascending: true });
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          setCertificates(data as Certificate[]);
+          localStorage.setItem("zamboti_crm_certificates", JSON.stringify(data));
+          return;
+        }
+      } catch (err) {
+        console.error("Erro ao carregar certificados do Supabase:", err);
+      }
+    }
+    
+    // Fallback: LocalStorage
+    const saved = localStorage.getItem("zamboti_crm_certificates");
+    if (saved) {
+      try {
+        setCertificates(JSON.parse(saved));
+      } catch (e) {
+        setCertificates([]);
+      }
+    } else {
+      setCertificates([]);
+    }
+  };
+
+  const saveCertificates = async (updatedCerts: Certificate[]) => {
+    setCertificates(updatedCerts);
+    localStorage.setItem("zamboti_crm_certificates", JSON.stringify(updatedCerts));
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const currentIds = new Set(updatedCerts.map(c => c.id));
+        const deletedIds = certificates.filter(c => !currentIds.has(c.id)).map(c => c.id);
+
+        if (deletedIds.length > 0) {
+          const { error: delError } = await supabase
+            .from("zamboti_certificates")
+            .delete()
+            .in("id", deletedIds);
+          if (delError) throw delError;
+        }
+
+        if (updatedCerts.length > 0) {
+          const { error: upsertError } = await supabase
+            .from("zamboti_certificates")
+            .upsert(updatedCerts, { onConflict: "id" });
+          if (upsertError) throw upsertError;
+        }
+      } catch (err) {
+        console.error("Erro ao sincronizar certificados com Supabase:", err);
+      }
+    }
+  };
+
   useEffect(() => {
     loadClients();
+    loadCertificates();
+    
+    // Generate initial random certificate ID
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let initId = "ZAMB-";
+    for (let i = 0; i < 6; i++) {
+      initId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewCertId(initId);
   }, []);
 
   // Save clients to LocalStorage and remote database
@@ -359,8 +455,21 @@ export default function AdminDashboard() {
         
         if (upsertError) throw upsertError;
       }
+
+      // Sync certificates
+      const savedCerts = localStorage.getItem("zamboti_crm_certificates");
+      if (savedCerts) {
+        const localCerts: Certificate[] = JSON.parse(savedCerts);
+        if (localCerts.length > 0) {
+          const { error: upsertCertsError } = await supabase
+            .from("zamboti_certificates")
+            .upsert(localCerts, { onConflict: "id" });
+          if (upsertCertsError) throw upsertCertsError;
+        }
+      }
       
       await loadClients();
+      await loadCertificates();
       alert("Sincronização concluída com sucesso! Os dados locais foram enviados para a nuvem.");
     } catch (err: any) {
       console.error("Erro na sincronização:", err);
@@ -369,6 +478,80 @@ export default function AdminDashboard() {
       setIsSyncing(false);
     }
   };
+
+  // Certificate Helper Functions
+  const autoGenerateCertId = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "ZAMB-";
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewCertId(result);
+  };
+
+  const handleCreateCertificate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCertId || !newCertStudent || !newCertCourse || !newCertHours) return;
+
+    if (certificates.some(c => c.id.toUpperCase() === newCertId.trim().toUpperCase())) {
+      alert("Este código de certificado já está registrado!");
+      return;
+    }
+
+    const newCert: Certificate = {
+      id: newCertId.trim().toUpperCase(),
+      student_name: newCertStudent,
+      course_name: newCertCourse,
+      hours: Number(newCertHours),
+      issue_date: newCertDate,
+      instructor: "Marcus Zamboti",
+      status: "Ativo"
+    };
+
+    const updated = [...certificates, newCert];
+    saveCertificates(updated);
+
+    // Reset Form
+    setNewCertStudent("");
+    setNewCertCourse("");
+    setNewCertHours(40);
+    setNewCertDate(new Date().toISOString().split("T")[0]);
+    
+    // Auto-generate next code
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let nextId = "ZAMB-";
+    for (let i = 0; i < 6; i++) {
+      nextId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewCertId(nextId);
+
+    alert(`Certificado registrado com sucesso! Código: ${newCert.id}`);
+  };
+
+  const handleDeleteCertificate = (id: string) => {
+    if (window.confirm(`Tem certeza que deseja excluir permanentemente o certificado ${id}?`)) {
+      const updated = certificates.filter(c => c.id !== id);
+      saveCertificates(updated);
+    }
+  };
+
+  const handleCopyLink = (id: string) => {
+    const origin = window.location.origin;
+    const link = `${origin}/certificado/${id}`;
+    navigator.clipboard.writeText(link)
+      .then(() => {
+        alert("Link de validação copiado para a área de transferência!");
+      })
+      .catch((err) => {
+        console.error("Erro ao copiar link:", err);
+      });
+  };
+
+  const filteredCertificates = certificates.filter(cert =>
+    cert.student_name.toLowerCase().includes(certSearchQuery.toLowerCase()) ||
+    cert.course_name.toLowerCase().includes(certSearchQuery.toLowerCase()) ||
+    cert.id.toLowerCase().includes(certSearchQuery.toLowerCase())
+  );
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -682,10 +865,30 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Logo />
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-            <span className="text-xs uppercase tracking-widest text-primary font-bold font-mono">
-              CRM & ASSET MANAGER
-            </span>
+            <span className="w-[1px] h-4 bg-white/10 hidden sm:inline-block" />
+            <div className="flex items-center gap-3 text-xs font-semibold tracking-wider font-mono">
+              <button
+                onClick={() => setActiveSection("crm")}
+                className={`transition-colors py-1 uppercase focus:outline-none ${
+                  activeSection === "crm" 
+                    ? "text-primary border-b border-primary font-bold" 
+                    : "text-muted-foreground hover:text-white"
+                }`}
+              >
+                Clientes
+              </button>
+              <span className="text-white/20">|</span>
+              <button
+                onClick={() => setActiveSection("certificates")}
+                className={`transition-colors py-1 uppercase focus:outline-none ${
+                  activeSection === "certificates" 
+                    ? "text-primary border-b border-primary font-bold" 
+                    : "text-muted-foreground hover:text-white"
+                }`}
+              >
+                Certificados
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
@@ -740,7 +943,9 @@ export default function AdminDashboard() {
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-7xl w-full mx-auto px-4 md:px-6 pt-24 pb-12 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <main className="max-w-7xl w-full mx-auto px-4 md:px-6 pt-24 pb-12 flex-grow">
+        {activeSection === "crm" ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* LEFT COLUMN: KPIS & CLIENT LIST (Cols: 4) */}
         <div className="lg:col-span-4 space-y-6">
@@ -1361,8 +1566,213 @@ export default function AdminDashboard() {
               </div>
             </Card>
           )}
-        </div>
+          </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* LEFT COLUMN: ISSUED LIST & SEARCH (Cols: 8) */}
+            <div className="lg:col-span-8 space-y-6">
+              {/* Search & Statistics Banner */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black/40 border border-white/10 p-5 rounded-2xl">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-base flex items-center gap-2">
+                    <Award className="w-5 h-5 text-primary" />
+                    Certificados Emitidos
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Total de {certificates.length} certificados emitidos para alunos.
+                  </p>
+                </div>
 
+                <div className="relative w-full sm:w-64">
+                  <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Buscar aluno ou curso..."
+                    value={certSearchQuery}
+                    onChange={(e) => setCertSearchQuery(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Table list */}
+              <Card className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-white/10 bg-white/[0.02] text-muted-foreground font-mono uppercase tracking-wider text-[10px]">
+                        <th className="p-4 font-semibold">Código</th>
+                        <th className="p-4 font-semibold">Aluno</th>
+                        <th className="p-4 font-semibold">Curso</th>
+                        <th className="p-4 font-semibold text-center">Horas</th>
+                        <th className="p-4 font-semibold">Emissão</th>
+                        <th className="p-4 font-semibold text-right">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5 font-sans">
+                      {filteredCertificates.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                            Nenhum certificado registrado ou encontrado na busca.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredCertificates.map(cert => (
+                          <tr key={cert.id} className="hover:bg-white/[0.01] transition-colors">
+                            <td className="p-4 font-mono font-bold text-primary">{cert.id}</td>
+                            <td className="p-4 font-semibold text-white/90">{cert.student_name}</td>
+                            <td className="p-4 text-white/70">{cert.course_name}</td>
+                            <td className="p-4 text-center font-mono text-white/90">{cert.hours}h</td>
+                            <td className="p-4 text-white/60">
+                              {new Date(cert.issue_date).toLocaleDateString("pt-BR", { timeZone: "UTC" })}
+                            </td>
+                            <td className="p-4 text-right flex items-center justify-end gap-2">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleCopyLink(cert.id)}
+                                className="text-muted-foreground hover:text-white p-2 rounded-lg"
+                                title="Copiar link de validação"
+                              >
+                                <Copy className="w-3.5 h-3.5" />
+                              </Button>
+                              <a
+                                href={`/certificado/${cert.id}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center justify-center p-2 rounded-lg text-muted-foreground hover:text-primary transition-colors bg-transparent hover:bg-white/5"
+                                title="Visualizar Certificado"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleDeleteCertificate(cert.id)}
+                                className="text-muted-foreground hover:text-red-400 p-2 rounded-lg"
+                                title="Excluir Registro"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </Button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+
+            {/* RIGHT COLUMN: ISSUE NEW CERTIFICATE (Cols: 4) */}
+            <div className="lg:col-span-4 space-y-6">
+              <Card className="bg-black/40 border border-white/10 p-6 rounded-2xl space-y-6">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sm text-primary uppercase tracking-wider font-mono">
+                    Emitir Novo Certificado
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Gere uma nova credencial autenticada no sistema para o aluno.
+                  </p>
+                </div>
+
+                <form onSubmit={handleCreateCertificate} className="space-y-4">
+                  <div className="space-y-3.5">
+                    {/* Código */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider flex justify-between items-center">
+                        <span>Código Único</span>
+                        <button
+                          type="button"
+                          onClick={autoGenerateCertId}
+                          className="text-primary hover:underline text-[9px]"
+                        >
+                          Auto-gerar
+                        </button>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="ZAMB-XXXXXX"
+                        value={newCertId}
+                        onChange={(e) => setNewCertId(e.target.value.toUpperCase())}
+                        required
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none uppercase"
+                      />
+                    </div>
+
+                    {/* Nome do Aluno */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">
+                        Nome do Aluno
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Nome completo do aluno"
+                        value={newCertStudent}
+                        onChange={(e) => setNewCertStudent(e.target.value)}
+                        required
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Nome do Curso */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">
+                        Curso / Treinamento
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Desenvolvimento Web & SEO"
+                        value={newCertCourse}
+                        onChange={(e) => setNewCertCourse(e.target.value)}
+                        required
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Carga Horária e Data */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">
+                          Horas Aula
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="Carga horária"
+                          value={newCertHours}
+                          onChange={(e) => setNewCertHours(Number(e.target.value))}
+                          required
+                          min={1}
+                          className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none font-mono"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">
+                          Data de Conclusão
+                        </label>
+                        <input
+                          type="date"
+                          value={newCertDate}
+                          onChange={(e) => setNewCertDate(e.target.value)}
+                          required
+                          className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full bg-primary text-black hover:bg-primary/90 font-bold py-3 rounded-xl transition-all shadow-[0_0_10px_rgba(6,182,212,0.2)] mt-2 text-xs"
+                  >
+                    Gerar e Registrar Certificado
+                  </Button>
+                </form>
+              </Card>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* CADASTRAR CLIENTE MODAL OVERLAY */}
