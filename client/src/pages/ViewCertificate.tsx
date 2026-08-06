@@ -106,6 +106,7 @@ export default function ViewCertificate({ params }: { params: { code: string } }
     year: "numeric",
     timeZone: "UTC"
   });
+  const validationUrl = window.location.origin + "/certificado/" + certificate.id;
 
   return (
     <div className="min-h-screen bg-[#0B0F19] text-white flex flex-col items-center justify-center py-8 px-4 relative overflow-hidden font-sans select-none">
@@ -225,13 +226,27 @@ export default function ViewCertificate({ params }: { params: { code: string } }
         </div>
 
         {/* Bottom Details Footer */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 border-t border-white/5 pt-4 mt-6 text-[8px] text-muted-foreground/80 font-mono z-10">
-          <span>
-            Chave de Validação: <strong className="text-white">{certificate.id}</strong>
-          </span>
-          <span className="text-center sm:text-right">
-            Verifique a autenticidade deste documento em: <strong className="text-primary">zamboticompany.com.br/validar</strong>
-          </span>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-white/5 pt-4 mt-6 text-[8px] text-muted-foreground/80 font-mono z-10 w-full">
+          <div className="space-y-1">
+            <div>
+              Chave de Validação: <strong className="text-white font-mono">{certificate.id}</strong>
+            </div>
+            <div>
+              Verifique a autenticidade deste documento em: <strong className="text-primary">{window.location.host}/validar</strong>
+            </div>
+          </div>
+
+          {/* Autenticidade QR Code */}
+          <div className="flex items-center gap-2 bg-white/[0.03] border border-white/10 p-1.5 rounded-xl">
+            <img 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&color=06b6d4&bgcolor=020617&data=${encodeURIComponent(validationUrl)}`}
+              alt="QR Code de Validação"
+              className="w-10 h-10 rounded"
+            />
+            <div className="text-[6.5px] leading-tight text-white/50 max-w-[85px]">
+              Escaneie este QR Code para verificar a validade online.
+            </div>
+          </div>
         </div>
 
       </div>
