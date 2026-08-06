@@ -28,9 +28,9 @@ import PromoModal from "@/components/zamboti/PromoModal";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#080808] text-white selection:bg-primary selection:text-black">
+    <div className="min-h-screen flex flex-col bg-[#0F172A] text-white selection:bg-primary selection:text-primary-foreground">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#080808]/80 backdrop-blur-md border-b border-white/10">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0F172A]/80 backdrop-blur-md border-b border-white/10">
         <div className="container max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Logo />
           
@@ -60,7 +60,7 @@ export default function Home() {
               href="https://wa.me/5511982326883"
               target="_blank"
               rel="noopener"
-              className="inline-flex items-center gap-2 bg-primary text-black font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+              className="inline-flex items-center gap-2 bg-primary text-black font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)]"
             >
               <MessageCircle className="w-4 h-4 fill-current" />
               <span>Contato</span>
@@ -71,7 +71,7 @@ export default function Home() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-[radial-gradient(ellipse_at_center,#121212_0%,#080808_100%)]">
+        <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-[radial-gradient(ellipse_at_center,#1E293B_0%,#0F172A_100%)]">
         {/* Background glow animations */}
         <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl -z-10 animate-pulse" />
         
@@ -98,7 +98,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <a
                   href="#simulador"
-                  className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/95 text-black font-bold text-sm tracking-wide px-8 py-4 rounded-xl shadow-[0_4px_20px_rgba(212,175,55,0.3)] transition-all transform hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/95 text-black font-bold text-sm tracking-wide px-8 py-4 rounded-xl shadow-[0_4px_20px_rgba(6,182,212,0.3)] transition-all transform hover:-translate-y-0.5"
                 >
                   Simular Projeto <ArrowRight className="w-4 h-4" />
                 </a>
@@ -188,7 +188,7 @@ export default function Home() {
       </section>
 
       {/* Services Hub */}
-      <section id="servicos" className="py-20 md:py-28 bg-[#0B0B0B] relative">
+      <section id="servicos" className="py-20 md:py-28 bg-[#0A0F1D] relative">
         <div className="container max-w-7xl mx-auto px-4">
           
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
@@ -205,7 +205,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {/* Service Card 1: PC Support */}
-            <Card className="relative overflow-hidden border-white/5 bg-black/40 p-8 rounded-2xl hover:border-primary/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.1)] transition-all group flex flex-col justify-between min-h-[360px]">
+            <Card className="relative overflow-hidden border-white/5 bg-black/40 p-8 rounded-2xl hover:border-primary/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.1)] transition-all group flex flex-col justify-between min-h-[360px]">
               <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/40 group-hover:bg-primary transition-colors" />
               
               <div className="space-y-6">
@@ -240,7 +240,7 @@ export default function Home() {
             </Card>
 
             {/* Service Card 2: Web Dev */}
-            <Card className="relative overflow-hidden border-white/5 bg-black/40 p-8 rounded-2xl hover:border-primary/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.1)] transition-all group flex flex-col justify-between min-h-[360px] md:translate-y-4">
+            <Card className="relative overflow-hidden border-white/5 bg-black/40 p-8 rounded-2xl hover:border-primary/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.1)] transition-all group flex flex-col justify-between min-h-[360px] md:translate-y-4">
               <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/40 group-hover:bg-primary transition-colors" />
               
               <div className="space-y-6">
@@ -275,7 +275,7 @@ export default function Home() {
             </Card>
 
             {/* Service Card 3: IT Consulting */}
-            <Card className="relative overflow-hidden border-white/5 bg-black/40 p-8 rounded-2xl hover:border-primary/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.1)] transition-all group flex flex-col justify-between min-h-[360px]">
+            <Card className="relative overflow-hidden border-white/5 bg-black/40 p-8 rounded-2xl hover:border-primary/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.1)] transition-all group flex flex-col justify-between min-h-[360px]">
               <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/40 group-hover:bg-primary transition-colors" />
               
               <div className="space-y-6">
@@ -314,7 +314,7 @@ export default function Home() {
       </section>
 
       {/* Before / After Drag Comparison Slider */}
-      <section id="otimizacao" className="py-20 md:py-28 bg-black relative border-y border-white/5 overflow-hidden">
+      <section id="otimizacao" className="py-20 md:py-28 bg-[#020617] relative border-y border-white/5 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -z-10" />
         <div className="container max-w-7xl mx-auto px-4">
           <OptimizationSlider />
@@ -322,7 +322,7 @@ export default function Home() {
       </section>
 
       {/* Structured Method section */}
-      <section className="py-20 md:py-28 bg-[#0B0B0B]">
+      <section className="py-20 md:py-28 bg-[#0A0F1D]">
         <div className="container max-w-7xl mx-auto px-4">
           
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
@@ -367,14 +367,14 @@ export default function Home() {
       </section>
 
       {/* Interactive Project Calculator */}
-      <section id="simulador" className="py-20 md:py-28 bg-black relative border-y border-white/5">
+      <section id="simulador" className="py-20 md:py-28 bg-[#020617] relative border-y border-white/5">
         <div className="container max-w-7xl mx-auto px-4">
           <ProjectCalculator />
         </div>
       </section>
 
       {/* FAQ Section with Accordion */}
-      <section id="faq" className="py-20 md:py-28 bg-[#0B0B0B]">
+      <section id="faq" className="py-20 md:py-28 bg-[#0A0F1D]">
         <div className="container max-w-4xl mx-auto px-4">
           
           <div className="text-center max-w-2xl mx-auto mb-14 space-y-4">
@@ -435,7 +435,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-black border-t border-white/5 py-12">
+      <footer className="bg-[#020617] border-t border-white/5 py-12">
         <div className="container max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-4">
@@ -509,7 +509,7 @@ export default function Home() {
               &copy; {new Date().getFullYear()} Zamboti Company. Todos os direitos reservados.
             </p>
             <div className="flex gap-6 mt-4 sm:mt-0 font-mono">
-              <span className="text-white/40">Premium Tech Elegante</span>
+              <span className="text-white/40">Premium Inteligência & Conectividade</span>
             </div>
           </div>
         </div>

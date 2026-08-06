@@ -623,8 +623,8 @@ export default function AdminDashboard() {
   // PASSCODE AUTHENTICATION SCREEN
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#080808] text-white flex items-center justify-center p-4 selection:bg-primary selection:text-black">
-        <Card className="w-full max-w-md bg-black/60 border border-primary/20 p-8 rounded-3xl backdrop-blur-md text-center space-y-6 shadow-[0_20px_50px_rgba(212,175,55,0.1)]">
+      <div className="min-h-screen bg-[#0F172A] text-white flex items-center justify-center p-4 selection:bg-primary selection:text-black">
+        <Card className="w-full max-w-md bg-black/60 border border-primary/20 p-8 rounded-3xl backdrop-blur-md text-center space-y-6 shadow-[0_20px_50px_rgba(6,182,212,0.1)]">
           <div className="flex flex-col items-center gap-3">
             <Logo />
             <h1 className="text-xl font-bold text-white/90 font-mono tracking-wider mt-4">
@@ -657,7 +657,7 @@ export default function AdminDashboard() {
 
             <Button
               type="submit"
-              className="w-full bg-primary text-black hover:bg-primary/90 font-bold py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+              className="w-full bg-primary text-black hover:bg-primary/90 font-bold py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)]"
             >
               Acessar Painel
             </Button>
@@ -675,7 +675,7 @@ export default function AdminDashboard() {
 
   // MAIN ADMIN PANEL VIEW
   return (
-    <div className="min-h-screen bg-[#080808] text-white flex flex-col selection:bg-primary selection:text-black font-sans">
+    <div className="min-h-screen bg-[#0F172A] text-white flex flex-col selection:bg-primary selection:text-black font-sans">
       
       {/* Header */}
       <header className="border-b border-white/10 bg-black/60 backdrop-blur-md py-4 px-6 fixed top-0 left-0 right-0 z-30">
@@ -789,7 +789,7 @@ export default function AdminDashboard() {
             </div>
             <Button
               onClick={() => setShowAddClientModal(true)}
-              className="bg-primary text-black hover:bg-primary/90 w-10 h-10 p-0 rounded-xl flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+              className="bg-primary text-black hover:bg-primary/90 w-10 h-10 p-0 rounded-xl flex items-center justify-center shadow-[0_0_10px_rgba(6,182,212,0.2)]"
               title="Cadastrar Novo Cliente"
             >
               <Plus className="w-5 h-5" />
@@ -1064,8 +1064,8 @@ export default function AdminDashboard() {
                           onChange={(e) => setDevType(e.target.value as "pc" | "server")}
                           className="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
                         >
-                          <option value="pc" className="bg-[#080808]">PC / Notebook</option>
-                          <option value="server" className="bg-[#080808]">Servidor</option>
+                           <option value="pc" className="bg-[#0F172A]">PC / Notebook</option>
+                           <option value="server" className="bg-[#0F172A]">Servidor</option>
                         </select>
                         <input
                           type="text"
@@ -1370,7 +1370,7 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowAddClientModal(false)} />
           
-          <Card className="relative w-full max-w-lg bg-black border border-primary/20 p-6 md:p-8 rounded-3xl z-10 space-y-6 shadow-[0_20px_50px_rgba(212,175,55,0.15)]">
+          <Card className="relative w-full max-w-lg bg-black border border-primary/20 p-6 md:p-8 rounded-3xl z-10 space-y-6 shadow-[0_20px_50px_rgba(6,182,212,0.15)]">
             <div className="space-y-1">
               <h4 className="text-xl font-bold text-white">Cadastrar Novo Cliente</h4>
               <p className="text-xs text-muted-foreground">Insira as informações básicas para iniciar a monitoração do contrato.</p>

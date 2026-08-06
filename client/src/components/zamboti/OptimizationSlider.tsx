@@ -75,15 +75,15 @@ export default function OptimizationSlider() {
           </div>
         </div>
 
-        {/* AFTER SIDE (Right/Gold) - Overlay with Clip Path */}
+        {/* AFTER SIDE (Right/Blue-Cyan) - Overlay with Clip Path */}
         <div
-          className="absolute inset-0 w-full h-full bg-[#0D0B05] flex flex-col justify-center items-end px-8 md:px-16 text-right"
+          className="absolute inset-0 w-full h-full bg-[#0B1329] flex flex-col justify-center items-end px-8 md:px-16 text-right"
           style={{
             clipPath: `polygon(${sliderPosition}% 0, 100% 0, 100% 100%, ${sliderPosition}% 100%)`,
           }}
         >
-          {/* Subtle grid gold */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#d4af3708_1px,transparent_1px),linear-gradient(to_bottom,#d4af3708_1px,transparent_1px)] bg-[size:16px_16px]" />
+          {/* Subtle grid cyan */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#06b6d40a_1px,transparent_1px),linear-gradient(to_bottom,#06b6d40a_1px,transparent_1px)] bg-[size:16px_16px]" />
           
           <div className="relative z-10 space-y-6 max-w-[260px] sm:max-w-[320px] md:max-w-[350px]">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
@@ -117,7 +117,7 @@ export default function OptimizationSlider() {
           className="absolute top-0 bottom-0 w-1 bg-primary cursor-ew-resize z-20 group"
           style={{ left: `${sliderPosition}%` }}
         >
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-black flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.6)] group-hover:scale-110 transition-transform">
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-black flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.6)] group-hover:scale-110 transition-transform">
             <ChevronLeft className="w-3.5 h-3.5 text-black absolute left-0.5" />
             <ChevronRight className="w-3.5 h-3.5 text-black absolute right-0.5" />
           </div>

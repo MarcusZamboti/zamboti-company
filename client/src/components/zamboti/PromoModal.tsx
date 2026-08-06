@@ -36,7 +36,7 @@ export default function PromoModal() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.9 }}
             onClick={handleOpen}
-            className="fixed bottom-6 right-6 z-40 cursor-pointer max-w-[280px] bg-black/80 border border-primary/30 p-4 rounded-2xl shadow-[0_10px_30px_rgba(212,175,55,0.2)] backdrop-blur-md hover:border-primary transition-all group hover:shadow-[0_15px_40px_rgba(212,175,55,0.4)]"
+            className="fixed bottom-6 right-6 z-40 cursor-pointer max-w-[280px] bg-black/80 border border-primary/30 p-4 rounded-2xl shadow-[0_10px_30px_rgba(6,182,212,0.2)] backdrop-blur-md hover:border-primary transition-all group hover:shadow-[0_15px_40px_rgba(6,182,212,0.4)]"
           >
             {/* Pulsing indicator */}
             <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary rounded-full animate-ping" />
@@ -81,12 +81,12 @@ export default function PromoModal() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.4 }}
-              className="relative w-full max-w-xl bg-black border border-primary/30 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(212,175,55,0.15)] z-10 flex flex-col"
+              className="relative w-full max-w-xl bg-black border border-primary/30 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(6,182,212,0.15)] z-10 flex flex-col"
             >
               {/* Golden gradient header design (No image backgrounds to keep it light/elegant) */}
               <div className="relative p-6 md:p-8 bg-gradient-to-br from-primary/10 via-black to-black border-b border-white/10 flex flex-col justify-end">
                 {/* Floating particle effect in CSS */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,#d4af3715_0%,transparent_50%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,#06b6d412_0%,transparent_50%)]" />
                 
                 <button
                   onClick={handleClose}
@@ -154,7 +154,7 @@ export default function PromoModal() {
                   </Button>
                   <Button
                     onClick={handleWhatsAppAction}
-                    className="bg-primary text-black hover:bg-primary/95 flex-1 font-bold shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+                    className="bg-primary text-black hover:bg-primary/95 flex-1 font-bold shadow-[0_0_20px_rgba(6,182,212,0.4)]"
                   >
                     <Phone className="w-4 h-4 mr-2" />
                     Quero Garantir a Oferta

@@ -43,77 +43,76 @@
 }
 
 :root {
-  /* Zamboti Company - Tech Elegante Moderno */
-  /* Primary colors: Dourado/Ouro para destaque */
-  --primary: oklch(0.72 0.18 60); /* Dourado #d4af37 */
-  --primary-foreground: oklch(0.1 0.01 0); /* Preto profundo */
-  --sidebar-primary: oklch(0.72 0.18 60);
-  --sidebar-primary-foreground: oklch(0.1 0.01 0);
-  --chart-1: oklch(0.72 0.18 60);
-  --chart-2: oklch(0.65 0.15 55);
-  --chart-3: oklch(0.75 0.2 65);
-  --chart-4: oklch(0.7 0.17 58);
-  --chart-5: oklch(0.68 0.16 52);
+  /* Zamboti Company - Z Conectado */
+  --primary: #06B6D4; /* Cyan */
+  --primary-foreground: #0F172A; /* Dark Navy */
+  --sidebar-primary: #06B6D4;
+  --sidebar-primary-foreground: #0F172A;
+  --chart-1: #06B6D4;
+  --chart-2: #2563EB;
+  --chart-3: #0ea5e9;
+  --chart-4: #38bdf8;
+  --chart-5: #7dd3fc;
   --radius: 0.65rem;
-  --background: oklch(1 0 0); /* Branco/Creme */
-  --foreground: oklch(0.1 0.01 0); /* Preto profundo */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.1 0.01 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.1 0.01 0);
-  --secondary: oklch(0.95 0.01 0); /* Cinza claro */
-  --secondary-foreground: oklch(0.2 0.01 0);
-  --muted: oklch(0.9 0.01 0);
-  --muted-foreground: oklch(0.4 0.01 0);
-  --accent: oklch(0.72 0.18 60); /* Dourado */
-  --accent-foreground: oklch(0.1 0.01 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.85 0.01 0);
-  --input: oklch(0.95 0.01 0);
-  --ring: oklch(0.72 0.18 60);
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.1 0.01 0);
-  --sidebar-accent: oklch(0.72 0.18 60);
-  --sidebar-accent-foreground: oklch(0.1 0.01 0);
-  --sidebar-border: oklch(0.85 0.01 0);
-  --sidebar-ring: oklch(0.72 0.18 60);
+  --background: #FFFFFF; /* White */
+  --foreground: #0F172A; /* Dark Navy */
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --secondary: #F1F5F9; /* Light Slate */
+  --secondary-foreground: #1E293B;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent: #2563EB; /* Royal Blue */
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #06B6D4;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #0F172A;
+  --sidebar-accent: #06B6D4;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #06B6D4;
 }
 
 .dark {
-  /* Zamboti Company Dark Mode - Tech Elegante Moderno */
-  --primary: oklch(0.72 0.18 60); /* Dourado */
-  --primary-foreground: oklch(0.1 0.01 0); /* Preto */
-  --sidebar-primary: oklch(0.72 0.18 60);
-  --sidebar-primary-foreground: oklch(0.1 0.01 0);
-  --background: oklch(0.1 0.01 0); /* Preto profundo */
-  --foreground: oklch(0.95 0.01 0); /* Branco/Creme */
-  --card: oklch(0.15 0.01 0); /* Preto mais claro */
-  --card-foreground: oklch(0.95 0.01 0);
-  --popover: oklch(0.15 0.01 0);
-  --popover-foreground: oklch(0.95 0.01 0);
-  --secondary: oklch(0.2 0.01 0);
-  --secondary-foreground: oklch(0.8 0.01 0);
-  --muted: oklch(0.25 0.01 0);
-  --muted-foreground: oklch(0.7 0.01 0);
-  --accent: oklch(0.72 0.18 60); /* Dourado */
-  --accent-foreground: oklch(0.1 0.01 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.2 0.01 0);
-  --input: oklch(0.15 0.01 0);
-  --ring: oklch(0.72 0.18 60);
-  --chart-1: oklch(0.72 0.18 60);
-  --chart-2: oklch(0.65 0.15 55);
-  --chart-3: oklch(0.75 0.2 65);
-  --chart-4: oklch(0.7 0.17 58);
-  --chart-5: oklch(0.68 0.16 52);
-  --sidebar: oklch(0.12 0.01 0);
-  --sidebar-foreground: oklch(0.95 0.01 0);
-  --sidebar-accent: oklch(0.72 0.18 60);
-  --sidebar-accent-foreground: oklch(0.1 0.01 0);
-  --sidebar-border: oklch(0.2 0.01 0);
-  --sidebar-ring: oklch(0.72 0.18 60);
+  /* Zamboti Company Dark Mode - Z Conectado */
+  --primary: #06B6D4; /* Cyan */
+  --primary-foreground: #0F172A; /* Dark Navy */
+  --sidebar-primary: #06B6D4;
+  --sidebar-primary-foreground: #0F172A;
+  --background: #0F172A; /* Deep Navy Background */
+  --foreground: #F8FAFC; /* Slate-50 */
+  --card: #1E293B; /* Slate-800 */
+  --card-foreground: #F8FAFC;
+  --popover: #1E293B;
+  --popover-foreground: #F8FAFC;
+  --secondary: #1E293B;
+  --secondary-foreground: #E2E8F0;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #2563EB; /* Royal Blue */
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #334155; /* Slate-700 */
+  --input: #1E293B;
+  --ring: #06B6D4;
+  --chart-1: #06B6D4;
+  --chart-2: #2563EB;
+  --chart-3: #0ea5e9;
+  --chart-4: #38bdf8;
+  --chart-5: #7dd3fc;
+  --sidebar: #0F172A;
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-accent: #06B6D4;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: #334155;
+  --sidebar-ring: #06B6D4;
 }
 
 @layer base {
@@ -125,7 +124,7 @@
     font-family: 'Inter', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Exo 2', sans-serif;
     font-weight: 700;
   }
   h1 {
@@ -153,16 +152,6 @@
 @layer components {
   /**
    * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
    */
   .container {
     width: 100%;
@@ -227,7 +216,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.72 0.18 60); /* Dourado */
+  background: #06B6D4; /* Cyan */
 }
 
 /* Marquee Animation */
@@ -263,10 +252,14 @@ html {
 }
 
 /* Glowing effects */
-.gold-glow {
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+.cyan-glow {
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
 }
 
 .text-glow {
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}
+
+.font-exo {
+  font-family: 'Exo 2', sans-serif;
 }

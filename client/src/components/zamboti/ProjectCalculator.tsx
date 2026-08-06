@@ -295,7 +295,7 @@ Gostaria de agendar ou solicitar um orçamento final!`;
             </Button>
             <Button
               onClick={handleSendWhatsApp}
-              className="bg-primary text-black hover:bg-primary/95 flex-1 font-bold shadow-[0_0_15px_rgba(212,175,55,0.4)] animate-pulse hover:animate-none"
+              className="bg-primary text-black hover:bg-primary/95 flex-1 font-bold shadow-[0_0_15px_rgba(6,182,212,0.4)] animate-pulse hover:animate-none"
             >
               <MessageSquare className="w-4 h-4 mr-2" />
               Solicitar Orçamento
