@@ -336,8 +336,11 @@ export default function AdminDashboard() {
             .upsert(updatedCerts, { onConflict: "id" });
           if (upsertError) throw upsertError;
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Erro ao sincronizar certificados com Supabase:", err);
+        if (err && (err.code === "42P01" || (err.message && err.message.includes("does not exist")))) {
+          alert("Alerta: A tabela 'zamboti_certificates' não foi encontrada no seu Supabase. Por favor, execute o script SQL de criação de tabela fornecido no painel do Supabase para ativar a nuvem.");
+        }
       }
     }
   };
@@ -493,7 +496,8 @@ export default function AdminDashboard() {
     e.preventDefault();
     if (!newCertId || !newCertStudent || !newCertCourse || !newCertHours) return;
 
-    if (certificates.some(c => c.id.toUpperCase() === newCertId.trim().toUpperCase())) {
+    const cleanNewCode = newCertId.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (certificates.some(c => c.id.toUpperCase().replace(/[^A-Z0-9]/g, "") === cleanNewCode)) {
       alert("Este código de certificado já está registrado!");
       return;
     }

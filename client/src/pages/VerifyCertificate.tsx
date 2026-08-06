@@ -32,15 +32,30 @@ export default function VerifyCertificate() {
     setCertificate(null);
 
     const formattedCode = code.trim().toUpperCase();
+    const cleanSearchCode = formattedCode.replace(/[^A-Z0-9]/g, "");
 
     try {
       // 1. Search in Supabase if configured
       if (isSupabaseConfigured && supabase) {
-        const { data, error } = await supabase
+        let { data, error } = await supabase
           .from("zamboti_certificates")
           .select("*")
           .eq("id", formattedCode)
           .maybeSingle();
+
+        // Se não achou com o código exato, busca todos e filtra por equivalência limpa (sem traço/espaço)
+        if (!data && !error) {
+          const { data: allData, error: allError } = await supabase
+            .from("zamboti_certificates")
+            .select("*");
+          
+          if (allData && !allError) {
+            const match = allData.find(c => c.id.toUpperCase().replace(/[^A-Z0-9]/g, "") === cleanSearchCode);
+            if (match) {
+              data = match;
+            }
+          }
+        }
 
         if (data && !error) {
           setCertificate(data as Certificate);
@@ -54,7 +69,7 @@ export default function VerifyCertificate() {
       const savedCerts = localStorage.getItem("zamboti_crm_certificates");
       if (savedCerts) {
         const parsed = JSON.parse(savedCerts) as Certificate[];
-        const match = parsed.find(c => c.id.toUpperCase() === formattedCode);
+        const match = parsed.find(c => c.id.toUpperCase().replace(/[^A-Z0-9]/g, "") === cleanSearchCode);
         if (match) {
           setCertificate(match);
           setChecked(true);
