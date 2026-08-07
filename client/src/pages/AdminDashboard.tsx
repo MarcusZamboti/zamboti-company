@@ -167,6 +167,7 @@ export default function AdminDashboard() {
   const [newCertCourse, setNewCertCourse] = useState("");
   const [newCertHours, setNewCertHours] = useState(40);
   const [newCertDate, setNewCertDate] = useState(new Date().toISOString().split("T")[0]);
+  const [newCertInstructor, setNewCertInstructor] = useState("Marcus Zamboti");
   
   // Forms states
   const [showAddClientModal, setShowAddClientModal] = useState(false);
@@ -508,7 +509,7 @@ export default function AdminDashboard() {
       course_name: newCertCourse,
       hours: Number(newCertHours),
       issue_date: newCertDate,
-      instructor: "Marcus Zamboti",
+      instructor: newCertInstructor.trim() || "Marcus Zamboti",
       status: "Ativo"
     };
 
@@ -1763,6 +1764,21 @@ export default function AdminDashboard() {
                           className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none font-mono"
                         />
                       </div>
+                    </div>
+
+                    {/* Nome do Instrutor */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">
+                        Nome do Instrutor / Professor
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Marcus Zamboti"
+                        value={newCertInstructor}
+                        onChange={(e) => setNewCertInstructor(e.target.value)}
+                        required
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none"
+                      />
                     </div>
                   </div>
 

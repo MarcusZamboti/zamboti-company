@@ -218,8 +218,8 @@ export default function ViewCertificate({ params }: { params: { code: string } }
             </div>
             <div className="w-full max-w-[200px] h-[1px] bg-white/20" />
             <div className="space-y-0.5">
-              <p className="text-[10px] font-bold text-white/90 leading-none">Marcus Zamboti</p>
-              <p className="text-[8px] text-muted-foreground leading-none">Instrutor & Diretor de TI</p>
+              <p className="text-[10px] font-bold text-white/90 leading-none">{certificate.instructor}</p>
+              <p className="text-[8px] text-muted-foreground leading-none">Instrutor(a) de Tecnologia</p>
             </div>
           </div>
 
